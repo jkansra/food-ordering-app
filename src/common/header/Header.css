@@ -1,0 +1,17 @@
+.header {
+  background-color: #686868;
+  padding: 0.5rem 0.8rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.white-icon {
+  color: white;
+}
+.header .search-restaurant:after {
+  border-bottom: 2px solid white;
+}
+.header .search-restaurant {
+  width: 17rem;
+  color: white;
+}
