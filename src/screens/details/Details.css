@@ -1,0 +1,27 @@
+.restaurant-wrapper {
+  background-color: lightgray;
+  padding: 1rem;
+}
+.restaurant-card {
+  display: flex;
+}
+.restaurant-img {
+  width: 300px;
+}
+.restaurant-wrapper .restaurant-card .card-content {
+  margin-left: 4rem;
+  width: 60%;
+}
+@media (max-width: 800px) {
+  .restaurant-wrapper {
+    padding: 1rem;
+  }
+  .restaurant-wrapper .restaurant-card {
+    display: block;
+    text-align: center;
+  }
+  .restaurant-wrapper .restaurant-card .card-content {
+    width: 90%;
+    margin: 0 auto;
+  }
+}

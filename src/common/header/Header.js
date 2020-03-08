@@ -40,6 +40,7 @@ class Header extends React.Component {
   };
   render() {
     const { modalIsOpen, showDropdown, loginSuccess } = this.state;
+    const { detailsPageHeader } = this.props;
     const customStyles = {
       content: {
         top: "50%",
@@ -54,18 +55,20 @@ class Header extends React.Component {
     return (
       <div className="header">
         <FastfoodIcon className="white-icon" />
-        <Input
-          id="username"
-          type="search"
-          className="search-restaurant"
-          startAdornment={
-            <InputAdornment position="start">
-              <SearchIcon className="white-icon" />
-            </InputAdornment>
-          }
-          placeholder="Search by Restaurant Name"
-          //   onChange={e => this.handleChange(e)}
-        />
+        {!detailsPageHeader ? (
+          <Input
+            id="username"
+            type="search"
+            className="search-restaurant"
+            startAdornment={
+              <InputAdornment position="start">
+                <SearchIcon className="white-icon" />
+              </InputAdornment>
+            }
+            placeholder="Search by Restaurant Name"
+            //   onChange={e => this.handleChange(e)}
+          />
+        ) : null}
         {loginSuccess ? (
           <>
             <div className="pic-wrapper" onClick={this.toggleDropdown}>
@@ -89,6 +92,7 @@ class Header extends React.Component {
               variant="contained"
               color="default"
               onClick={this.openModal}
+              className="header-login-btn"
             >
               <AccountCircle />
               &nbsp;Login

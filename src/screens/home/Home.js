@@ -12,7 +12,7 @@ const useStyles = makeStyles({
 });
 const goToDetails = id => {
   console.log(id);
-  // window.location = `/details/${id}`;
+  window.location = `/details/${id}`;
 };
 
 const Home = () => {

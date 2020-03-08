@@ -59,4 +59,13 @@
   .header .search-restaurant {
     margin: 1rem 0;
   }
+  .header .header-login-btn,
+  .pic-wrapper {
+    margin-top: 0.5rem;
+  }
+  .dropdown {
+    top: 4rem;
+    left: 0.5rem;
+    right: auto;
+  }
 }
