@@ -15,3 +15,48 @@
   width: 17rem;
   color: white;
 }
+.login-wrapper,
+.signup-wrapper {
+  text-align: center;
+}
+.login-btn.m1,
+.signup-btn.m1 {
+  margin-top: 1rem;
+}
+.error {
+  color: red;
+  margin-top: 5px;
+  text-align: left;
+}
+.pic-wrapper {
+  position: relative;
+  color: lightgray;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+.dropdown {
+  position: absolute;
+  background: #fff;
+  color: black;
+  padding: 0 1rem;
+  border-radius: 8px;
+  top: 2.5rem;
+  right: 0.5rem;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.5), 0 1px 4px rgba(0, 0, 0, 0.5),
+    0 2px 8px rgba(0, 0, 0, 0.5);
+}
+.option {
+  margin-top: 0.7rem;
+  cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .header .search-restaurant {
+    margin: 1rem 0;
+  }
+}

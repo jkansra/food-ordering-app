@@ -1,0 +1,28 @@
+.card-wrapper {
+  width: 95%;
+  margin: 0 auto;
+}
+.card-wrapper .restaurant-card {
+  display: inline-block;
+  width: 22%;
+  margin: 1rem;
+}
+.footer {
+  display: flex;
+}
+
+@media (max-width: 1100px) {
+  .card-wrapper .restaurant-card {
+    width: 30%;
+  }
+}
+@media (max-width: 1000px) {
+  .card-wrapper .restaurant-card {
+    width: 45%;
+  }
+}
+@media (max-width: 660px) {
+  .card-wrapper .restaurant-card {
+    width: 93%;
+  }
+}
