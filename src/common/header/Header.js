@@ -97,6 +97,7 @@ class Header extends React.Component {
               isOpen={modalIsOpen}
               onRequestClose={this.closeModal}
               style={customStyles}
+              ariaHideApp={false}
             >
               <LoginTabs />
             </Modal>

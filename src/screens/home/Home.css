@@ -6,9 +6,19 @@
   display: inline-block;
   width: 22%;
   margin: 1rem;
+  cursor: pointer;
 }
 .footer {
   display: flex;
+  justify-content: space-between;
+}
+.ratings-wrapper {
+  background-color: goldenrod;
+  padding: 0 0.8rem;
+  color: white;
+}
+.categories {
+  word-break: break-all;
 }
 
 @media (max-width: 1100px) {

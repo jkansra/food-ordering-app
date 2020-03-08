@@ -10,7 +10,6 @@ export default class SignUpForm extends React.Component {
       email: "",
       contact: "",
       password: "",
-      validateCredentials: true,
       emptyFirstName: false,
       emptyEmail: false,
       emptyContact: false,
@@ -40,8 +39,7 @@ export default class SignUpForm extends React.Component {
         emptyFirstName: false,
         emptyEmail: false,
         emptyContact: false,
-        emptyPassword: false,
-        validateCredentials: true
+        emptyPassword: false
       });
 
       if (firstName === "") {
@@ -61,9 +59,11 @@ export default class SignUpForm extends React.Component {
 
       if (password === "") {
         this.setState({ emptyPassword: true, invalidPassword: false });
-      } else if (/((?=.*\\d)(?=.*[A-Z])(?=.*[@#$%]))/.test(password)) {
-        this.setState({ invalidPassword: false });
-      } else {
+      }
+      // else if (/((?=.*\\d)(?=.*[A-Z])(?=.*[@#$%]))/.test(password)) {
+      //   this.setState({ invalidPassword: false });
+      // }
+      else {
         this.setState({ invalidPassword: true });
       }
 
@@ -86,20 +86,33 @@ export default class SignUpForm extends React.Component {
       });
       return;
     }
-    //   if (contact === user && password === pwd) {
-    //     this.setState({ validateCredentials: true });
-    //     sessionStorage.setItem(
-    //       "accessToken",
-    //       "8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784"
-    //     );
-    //     window.location = "/home";
-    //   } else {
-    //     this.setState({ validateCredentials: false });
-    //   }
+    if (firstName !== "" && email !== "" && contact !== "" && password !== "") {
+      const data = {
+        firstName: firstName,
+        lastName: lastName,
+        emailAddress: email,
+        contactNumber: contact,
+        password: password
+      };
+
+      fetch("http://localhost:8080/api/signup", {
+        method: "POST", // or 'PUT'
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+      })
+        .then(response => response.json())
+        .then(data => {
+          console.log("Success:", data);
+        })
+        .catch(error => {
+          console.error("Error:", error);
+        });
+    }
   };
   render() {
     const {
-      validateCredentials,
       emptyContact,
       emptyPassword,
       emptyFirstName,
