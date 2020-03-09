@@ -1,5 +1,13 @@
 import * as React from "react";
-import { FormControl, Input, InputLabel, Button } from "@material-ui/core";
+import {
+  FormControl,
+  Input,
+  InputLabel,
+  IconButton,
+  Button,
+  Snackbar
+} from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
 export default class SignUpForm extends React.Component {
   constructor() {
@@ -16,9 +24,15 @@ export default class SignUpForm extends React.Component {
       emptyPassword: false,
       invalidEmail: false,
       invalidPassword: false,
-      invalidContact: false
+      invalidContact: false,
+      signupError: false,
+      signupErrorMsg: "",
+      showSnackbar: false
     };
   }
+  handleClose = () => {
+    this.setState({ showSnackbar: false });
+  };
   handleChange(e, type) {
     const value = e.target.value;
     const nextState = {};
@@ -31,9 +45,16 @@ export default class SignUpForm extends React.Component {
     }
   };
   handleClick = () => {
-    const user = "user";
-    const pwd = "user";
-    const { firstName, lastName, email, contact, password } = this.state;
+    const {
+      firstName,
+      lastName,
+      email,
+      contact,
+      password,
+      invalidEmail,
+      invalidContact,
+      invalidPassword
+    } = this.state;
     if (firstName !== "" || email !== "" || contact !== "" || password !== "") {
       this.setState({
         emptyFirstName: false,
@@ -59,11 +80,13 @@ export default class SignUpForm extends React.Component {
 
       if (password === "") {
         this.setState({ emptyPassword: true, invalidPassword: false });
-      }
-      // else if (/((?=.*\\d)(?=.*[A-Z])(?=.*[@#$%]))/.test(password)) {
-      //   this.setState({ invalidPassword: false });
-      // }
-      else {
+      } else if (
+        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(
+          password
+        )
+      ) {
+        this.setState({ invalidPassword: false });
+      } else {
         this.setState({ invalidPassword: true });
       }
 
@@ -86,17 +109,25 @@ export default class SignUpForm extends React.Component {
       });
       return;
     }
-    if (firstName !== "" && email !== "" && contact !== "" && password !== "") {
+    if (
+      firstName !== "" &&
+      email !== "" &&
+      contact !== "" &&
+      password !== "" &&
+      !invalidEmail &&
+      !invalidContact &&
+      !invalidPassword
+    ) {
       const data = {
-        firstName: firstName,
-        lastName: lastName,
-        emailAddress: email,
-        contactNumber: contact,
+        first_name: firstName,
+        last_name: lastName,
+        email_address: email,
+        contact_number: contact,
         password: password
       };
 
-      fetch("http://localhost:8080/api/signup", {
-        method: "POST", // or 'PUT'
+      fetch("http://localhost:8080/api/customer/signup", {
+        method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
@@ -104,9 +135,26 @@ export default class SignUpForm extends React.Component {
       })
         .then(response => response.json())
         .then(data => {
-          console.log("Success:", data);
+          if (data.status) {
+            console.log("Success:", data);
+            this.setState({
+              signupError: false,
+              signupErrorMsg: "",
+              showSnackbar: true
+            });
+          } else if (data.message) {
+            console.error("Error:", data.message);
+            this.setState({
+              signupError: true,
+              signupErrorMsg: data.message,
+              showSnackbar: false
+            });
+          }
         })
         .catch(error => {
+          this.setState({
+            showSnackbar: false
+          });
           console.error("Error:", error);
         });
     }
@@ -119,69 +167,96 @@ export default class SignUpForm extends React.Component {
       emptyEmail,
       invalidEmail,
       invalidPassword,
-      invalidContact
+      invalidContact,
+      signupError,
+      signupErrorMsg,
+      showSnackbar
     } = this.state;
     return (
-      <div className="signup-wrapper">
-        <FormControl fullWidth={true} margin="normal">
-          <InputLabel htmlFor="firstName">First Name *</InputLabel>
-          <Input
-            id="firstName"
-            onChange={e => this.handleChange(e, "firstName")}
-          />
-          {emptyFirstName ? <span className="error">required</span> : null}
-        </FormControl>
-        <FormControl fullWidth={true} margin="normal">
-          <InputLabel htmlFor="lastName">Last Name</InputLabel>
-          <Input
-            id="lastName"
-            onChange={e => this.handleChange(e, "lastName")}
-          />
-        </FormControl>
-        <FormControl fullWidth={true} margin="normal">
-          <InputLabel htmlFor="email">Email *</InputLabel>
-          <Input id="email" onChange={e => this.handleChange(e, "email")} />
-          {emptyEmail ? <span className="error">required</span> : null}
-          {invalidEmail ? <span className="error">Invalid Email</span> : null}
-        </FormControl>
-        <FormControl fullWidth={true} margin="normal">
-          <InputLabel htmlFor="password">Password *</InputLabel>
-          <Input
-            id="password"
-            type="password"
-            onChange={e => this.handleChange(e, "password")}
-          />
-          {emptyPassword ? <span className="error">required</span> : null}
-          {invalidPassword ? (
-            <span className="error">
-              Password must contain at least one capital letter, one small
-              letter, one number, and one special character
-            </span>
-          ) : null}
-        </FormControl>
-        <FormControl fullWidth={true} margin="normal">
-          <InputLabel htmlFor="contact">Contact No. *</InputLabel>
-          <Input
-            id="contact"
-            onChange={e => this.handleChange(e, "contact")}
-            inputProps={{ maxLength: 10 }}
-          />
-          {emptyContact ? <span className="error">required</span> : null}
-          {invalidContact ? (
-            <span className="error">
-              Contact No. must contain only numbers and must be 10 digits long
-            </span>
-          ) : null}
-        </FormControl>
-        <Button
-          variant="contained"
-          color="primary"
-          className="signup-btn m1"
-          onClick={this.handleClick}
-        >
-          SIGNUP
-        </Button>
-      </div>
+      <>
+        <div className="signup-wrapper">
+          <FormControl fullWidth={true} margin="normal">
+            <InputLabel htmlFor="firstName">First Name *</InputLabel>
+            <Input
+              id="firstName"
+              onChange={e => this.handleChange(e, "firstName")}
+            />
+            {emptyFirstName ? <span className="error">required</span> : null}
+          </FormControl>
+          <FormControl fullWidth={true} margin="normal">
+            <InputLabel htmlFor="lastName">Last Name</InputLabel>
+            <Input
+              id="lastName"
+              onChange={e => this.handleChange(e, "lastName")}
+            />
+          </FormControl>
+          <FormControl fullWidth={true} margin="normal">
+            <InputLabel htmlFor="email">Email *</InputLabel>
+            <Input id="email" onChange={e => this.handleChange(e, "email")} />
+            {emptyEmail ? <span className="error">required</span> : null}
+            {invalidEmail ? <span className="error">Invalid Email</span> : null}
+          </FormControl>
+          <FormControl fullWidth={true} margin="normal">
+            <InputLabel htmlFor="password">Password *</InputLabel>
+            <Input
+              id="password"
+              type="password"
+              onChange={e => this.handleChange(e, "password")}
+            />
+            {emptyPassword ? <span className="error">required</span> : null}
+            {invalidPassword ? (
+              <span className="error">
+                Password must contain at least one capital letter, one small
+                letter, one number, and one special character
+              </span>
+            ) : null}
+          </FormControl>
+          <FormControl fullWidth={true} margin="normal">
+            <InputLabel htmlFor="contact">Contact No. *</InputLabel>
+            <Input
+              id="contact"
+              onChange={e => this.handleChange(e, "contact")}
+              inputProps={{ maxLength: 10 }}
+            />
+            {emptyContact ? <span className="error">required</span> : null}
+            {invalidContact ? (
+              <span className="error">
+                Contact No. must contain only numbers and must be 10 digits long
+              </span>
+            ) : null}
+          </FormControl>
+          {signupError ? <span className="error">{signupErrorMsg}</span> : null}
+          <Button
+            variant="contained"
+            color="primary"
+            className="signup-btn m1"
+            onClick={this.handleClick}
+          >
+            SIGNUP
+          </Button>
+        </div>
+        <Snackbar
+          open={showSnackbar}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left"
+          }}
+          message="Registered successfully! Please login now!"
+          action={
+            <React.Fragment>
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                onClick={this.handleClose}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+          }
+        ></Snackbar>
+      </>
     );
   }
 }

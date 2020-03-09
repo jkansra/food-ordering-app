@@ -1,5 +1,13 @@
 import * as React from "react";
-import { FormControl, Input, InputLabel, Button } from "@material-ui/core";
+import {
+  Button,
+  FormControl,
+  Input,
+  InputLabel,
+  IconButton,
+  Snackbar
+} from "@material-ui/core";
+import CloseIcon from "@material-ui/icons/Close";
 
 export default class LoginForm extends React.Component {
   constructor() {
@@ -7,12 +15,17 @@ export default class LoginForm extends React.Component {
     this.state = {
       contact: "",
       password: "",
-      validateCredentials: true,
       emptyContact: false,
       emptyPassword: false,
-      invalidContact: false
+      invalidContact: false,
+      loginError: false,
+      loinErrorMsg: "",
+      showSnackbar: false
     };
   }
+  handleClose = () => {
+    this.setState({ showSnackbar: false });
+  };
   handleChange(e, type) {
     const value = e.target.value;
     const nextState = {};
@@ -20,14 +33,11 @@ export default class LoginForm extends React.Component {
     this.setState(nextState);
   }
   handleClick = () => {
-    const user = "user";
-    const pwd = "user";
-    const { contact, password } = this.state;
+    const { contact, password, invalidContact } = this.state;
     if (contact !== "" || password !== "") {
       this.setState({
         emptyContact: false,
-        emptyPassword: false,
-        validateCredentials: true
+        emptyPassword: false
       });
       if (contact === "") {
         this.setState({ emptyContact: true });
@@ -51,59 +61,107 @@ export default class LoginForm extends React.Component {
       });
       return;
     }
-    // if (contact === user && password === pwd) {
-    //   this.setState({ validateCredentials: true });
-    //   sessionStorage.setItem(
-    //     "accessToken",
-    //     "8661035776.d0fcd39.39f63ab2f88d4f9c92b0862729ee2784"
-    //   );
-    //   window.location = "/home";
-    // } else {
-    //   this.setState({ validateCredentials: false });
-    // }
+    if (contact !== "" && password !== "" && !invalidContact) {
+      const dataString = btoa(contact + ":" + password);
+
+      fetch("http://localhost:8080/api/customer/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: dataString
+        }
+      })
+        .then(response => response.json())
+        .then(data => {
+          if (data.status) {
+            console.log("Success:", data);
+            this.setState({
+              loginError: false,
+              loginErrorMsg: "",
+              showSnackbar: true
+            });
+          } else if (data.message) {
+            console.error("Error:", data.message);
+            this.setState({
+              loginError: true,
+              loginErrorMsg: data.message,
+              showSnackbar: false
+            });
+          }
+        })
+        .catch(error => {
+          this.setState({
+            showSnackbar: false
+          });
+          console.error("Error:", error);
+        });
+    }
   };
   render() {
     const {
-      validateCredentials,
       emptyContact,
       emptyPassword,
-      invalidContact
+      invalidContact,
+      showSnackbar,
+      loginError,
+      loginErrorMsg
     } = this.state;
     return (
-      <div className="login-wrapper">
-        <FormControl fullWidth={true} margin="normal">
-          <InputLabel htmlFor="contact">Contact No. *</InputLabel>
-          <Input
-            id="contact"
-            onChange={e => this.handleChange(e, "contact")}
-            inputProps={{ maxLength: 10 }}
-          />
-          {emptyContact ? <span className="error">required</span> : null}
-          {invalidContact ? (
-            <span className="error">Invalid Contact</span>
-          ) : null}
-        </FormControl>
-        <FormControl fullWidth={true} margin="normal">
-          <InputLabel htmlFor="password">Password *</InputLabel>
-          <Input
-            id="password"
-            type="password"
-            onChange={e => this.handleChange(e, "password")}
-          />
-          {emptyPassword ? <span className="error">required</span> : null}
-          {!validateCredentials ? (
-            <span className="error">Incorrect contact and/or password</span>
-          ) : null}
-        </FormControl>
-        <Button
-          variant="contained"
-          color="primary"
-          className="login-btn m1"
-          onClick={this.handleClick}
-        >
-          LOGIN
-        </Button>
-      </div>
+      <>
+        <div className="login-wrapper">
+          <FormControl fullWidth={true} margin="normal">
+            <InputLabel htmlFor="contact">Contact No. *</InputLabel>
+            <Input
+              id="contact"
+              onChange={e => this.handleChange(e, "contact")}
+              inputProps={{ maxLength: 10 }}
+            />
+            {emptyContact ? <span className="error">required</span> : null}
+            {invalidContact ? (
+              <span className="error">Invalid Contact</span>
+            ) : null}
+          </FormControl>
+          <FormControl fullWidth={true} margin="normal">
+            <InputLabel htmlFor="password">Password *</InputLabel>
+            <Input
+              id="password"
+              type="password"
+              onChange={e => this.handleChange(e, "password")}
+            />
+            {emptyPassword ? <span className="error">required</span> : null}
+          </FormControl>
+          {loginError ? <span className="error">{loginErrorMsg}</span> : null}
+          <Button
+            variant="contained"
+            color="primary"
+            className="login-btn m1"
+            onClick={this.handleClick}
+          >
+            LOGIN
+          </Button>
+        </div>
+        <Snackbar
+          open={showSnackbar}
+          autoHideDuration={6000}
+          onClose={this.handleClose}
+          anchorOrigin={{
+            vertical: "bottom",
+            horizontal: "left"
+          }}
+          message="Logged in successfully!"
+          action={
+            <React.Fragment>
+              <IconButton
+                aria-label="close"
+                color="inherit"
+                onClick={this.handleClose}
+              >
+                <CloseIcon fontSize="small" />
+              </IconButton>
+            </React.Fragment>
+          }
+        ></Snackbar>
+      </>
     );
   }
 }

@@ -12,6 +12,44 @@
   margin-left: 4rem;
   width: 60%;
 }
+.restaurant-wrapper .restaurant-card .categories {
+  font-size: 0.8rem;
+  word-break: break-word;
+}
+.restaurant-wrapper .restaurant-card .footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+}
+.restaurant-wrapper .restaurant-card .footer .avg-text {
+  font-size: 0.6rem;
+  color: grey;
+  width: 60%;
+  word-break: break-word;
+}
+.comma:not(:first-child):before {
+  content: ", ";
+}
+.items-wrapper {
+  width: 50%;
+  padding: 1rem 2rem;
+}
+.item-row {
+  display: flex;
+  justify-content: space-between;
+}
+.food-item .food {
+  text-transform: capitalize;
+}
+.food-item .VEG {
+  color: green;
+}
+.food-item .NON_VEG {
+  color: red;
+}
+.food-price {
+  display: flex;
+}
 @media (max-width: 800px) {
   .restaurant-wrapper {
     padding: 1rem;
@@ -23,5 +61,8 @@
   .restaurant-wrapper .restaurant-card .card-content {
     width: 90%;
     margin: 0 auto;
+  }
+  .restaurant-wrapper .restaurant-card .footer .avg-text {
+    width: 100%;
   }
 }
