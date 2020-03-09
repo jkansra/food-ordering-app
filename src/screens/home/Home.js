@@ -18,7 +18,9 @@ class Home extends React.Component {
     };
   }
   goToDetails = id => {
-    console.log(id);
+    if (!sessionStorage.getItem("loginSuccess")) {
+      return;
+    }
     window.location = `/details/${id}`;
   };
   componentDidMount() {
