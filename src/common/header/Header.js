@@ -17,6 +17,9 @@ class Header extends React.Component {
       loginSuccess: false
     };
   }
+  updateLoginSuccess = flag => {
+    this.setState({ loginSuccess: flag });
+  };
   toggleDropdown = () => {
     if (this.state.showDropdown) {
       this.setState({ showDropdown: false });
@@ -103,7 +106,7 @@ class Header extends React.Component {
               style={customStyles}
               ariaHideApp={false}
             >
-              <LoginTabs />
+              <LoginTabs loginFlag={this.updateLoginSuccess} />
             </Modal>
           </>
         )}

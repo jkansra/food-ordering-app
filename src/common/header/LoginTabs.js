@@ -6,7 +6,6 @@ import SignUpForm from "./SignUpForm";
 
 function TabPanel(props) {
   const { children, value, index, ...other } = props;
-
   return (
     <Typography
       component="div"
@@ -41,7 +40,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function LoginTabs() {
+export default function LoginTabs(props) {
   const classes = useStyles();
   const [value, setValue] = React.useState(0);
 
@@ -56,7 +55,7 @@ export default function LoginTabs() {
         <Tab label="SIGNUP" {...a11yProps(1)} />
       </Tabs>
       <TabPanel value={value} index={0}>
-        <LoginForm />
+        <LoginForm loginFlag={props.loginFlag} />
       </TabPanel>
       <TabPanel value={value} index={1}>
         <SignUpForm />

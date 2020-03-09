@@ -80,6 +80,7 @@ export default class LoginForm extends React.Component {
               loginErrorMsg: "",
               showSnackbar: true
             });
+            this.props.loginFlag(true);
           } else if (data.message) {
             console.error("Error:", data.message);
             this.setState({
