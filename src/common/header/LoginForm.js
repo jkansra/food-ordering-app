@@ -52,6 +52,7 @@ export default class LoginForm extends React.Component {
         this.setState({ invalidContact: false });
       } else {
         this.setState({ invalidContact: true });
+        return;
       }
     } else {
       this.setState({
@@ -81,6 +82,7 @@ export default class LoginForm extends React.Component {
               showSnackbar: true
             });
             this.props.loginFlag(true);
+            sessionStorage.setItem("loginSuccess", true);
           } else if (data.message) {
             console.error("Error:", data.message);
             this.setState({
@@ -92,7 +94,9 @@ export default class LoginForm extends React.Component {
         })
         .catch(error => {
           this.setState({
-            showSnackbar: false
+            showSnackbar: false,
+            loginError: true,
+            loginErrorMsg: "Invalid Credentials"
           });
           console.error("Error:", error);
         });

@@ -20,6 +20,11 @@ class Header extends React.Component {
   updateLoginSuccess = flag => {
     this.setState({ loginSuccess: flag });
   };
+  componentDidMount() {
+    if (sessionStorage.getItem("loginSuccess")) {
+      this.setState({ loginSuccess: true });
+    }
+  }
   toggleDropdown = () => {
     if (this.state.showDropdown) {
       this.setState({ showDropdown: false });
@@ -33,6 +38,7 @@ class Header extends React.Component {
   logout = () => {
     this.setState({ loginSuccess: false });
     window.location = "/";
+    sessionStorage.removeItem("loginSuccess");
   };
 
   openModal = () => {
